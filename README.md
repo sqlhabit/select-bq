@@ -8,69 +8,41 @@ A **safe BigQuery CLI wrapper** for agentic use (e.g. with Cursor). Wraps the of
 
 ## Install
 
-From PyPI:
-
 ```bash
 pip install safe-bq
-# or
-uv pip install safe-bq
-```
-
-From source (development):
-
-```bash
-pip install -e .
-uv pip install -e .
 ```
 
 Requires the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) (`bq` CLI) and `gcloud auth login`.
 
-## Configuration
+## Setup
 
-Create a config file `.safe-bq.yaml` in your project root (or use `--config` to point to another path). You can copy from `.safe-bq.example.yaml` in this repo.
-
-### Log file
-
-Set where queries are logged with `log_path`:
+Create a config file `.safe-bq.yaml` in your project root:
 
 ```yaml
-log_path: safe-bq-queries.yaml   # default if omitted
-# or e.g.:
-log_path: /var/log/safe-bq/queries.yaml
-```
-
-### Allowlist
-
-To restrict which tables can be queried, add an `allowlist`. If the allowlist is present and non-empty, only tables matching it are allowed. Omit it or leave it empty to allow all tables.
-
-**Inline allowlist** (in `.safe-bq.yaml`):
-
-```yaml
+# Where to log queries (default: safe-bq-queries.yaml in current dir)
 log_path: safe-bq-queries.yaml
 
+# Optional allowlist. Omit or leave empty to allow all tables.
+# When present, only these tables can be queried.
 allowlist:
-  - project: my-project
-    dataset: my_dataset
-    table: my_table
-  - project: other
+  - project: my-gcp-project
+    dataset: analytics
+    table: events
+  - project: my-gcp-project
     dataset: analytics
     table: "*"   # wildcard: all tables in this dataset
 ```
 
-**External allowlist file** (useful to share across projects):
+- **`log_path`** — Path for the query log (default: `safe-bq-queries.yaml`). Use an absolute path to log outside the project.
+- **`allowlist`** — List of allowed `project`/`dataset`/`table`. Use `table: "*"` for all tables in a dataset. Omit to allow all tables.
+
+To use a different config path: `safe-bq query --config ./my-config.yaml "SELECT 1"`.
+
+To use an external allowlist file:
 
 ```yaml
 log_path: safe-bq-queries.yaml
 allowlist_path: allowlist.yaml
-```
-
-Then create `allowlist.yaml`:
-
-```yaml
-allowlist:
-  - project: my-project
-    dataset: my_dataset
-    table: my_table
 ```
 
 ## Usage
