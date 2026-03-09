@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "select-bq"
-version = "0.1.1"
+version = "0.2.0"
 description = "Select BigQuery CLI - SELECT-only queries with allowlist and audit logging"
 readme = "README.md"
 license = "MIT"
