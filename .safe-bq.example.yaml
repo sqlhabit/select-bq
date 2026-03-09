@@ -1,0 +1,18 @@
+# Example safe-bq config
+# Copy to .safe-bq.yaml and customize
+
+log_path: safe-bq-queries.yaml
+
+# Allowlist: only these tables are queryable when non-empty
+# Omit or leave empty to allow all tables
+allowlist:
+  - project: my-gcp-project
+    dataset: analytics
+    table: events
+  - project: my-gcp-project
+    dataset: analytics
+    table: users
+  # Wildcard: all tables in dataset
+  - project: my-gcp-project
+    dataset: public
+    table: "*"

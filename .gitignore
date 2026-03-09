@@ -1,0 +1,10 @@
+*.pyc
+__pycache__/
+.eggs/
+*.egg-info/
+dist/
+build/
+safe-bq-queries.yaml
+.venv/
+venv/
+env/
