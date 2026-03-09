@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,11 +7,36 @@ name = "safe-bq"
 version = "0.1.0"
 description = "Safe BigQuery CLI wrapper - SELECT-only queries with allowlist and audit logging"
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.10"
+keywords = ["bigquery", "cli", "security", "gcp", "sql", "allowlist", "audit"]
+authors = [{ name = "safe-bq contributors" }]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Database",
+]
 dependencies = [
     "sqlglot>=24.0",
     "pyyaml>=6.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.0",
+    "twine>=5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/sqlhabit/safe-bq"
+Repository = "https://github.com/sqlhabit/safe-bq"
 
 [project.scripts]
 safe-bq = "safe_bq.cli:main"
