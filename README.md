@@ -1,6 +1,6 @@
-# safe-bq
+# select-bq
 
-A **safe BigQuery CLI wrapper** for agentic use (e.g. with Cursor). Wraps the official `bq` CLI and enforces:
+A **SELECT-only BigQuery CLI wrapper** for agentic use (e.g. with Cursor). Wraps the official `bq` CLI and enforces:
 
 - **SELECT-only**: Queries are validated via SQL AST parsing—no DML, DDL, scripting, `EXECUTE IMMEDIATE`, or hidden CTEs that could modify data.
 - **Allowlist**: Optional config restricts queries to specific project/dataset/table. Empty or missing allowlist = no restriction.
@@ -9,18 +9,18 @@ A **safe BigQuery CLI wrapper** for agentic use (e.g. with Cursor). Wraps the of
 ## Install
 
 ```bash
-pip install safe-bq
+pip install select-bq
 ```
 
 Requires the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) (`bq` CLI) and `gcloud auth login`.
 
 ## Setup
 
-Create a config file `.safe-bq.yaml` in your project root:
+Create a config file `.select-bq.yaml` in your project root:
 
 ```yaml
-# Where to log queries (default: safe-bq-queries.yaml in current dir)
-log_path: safe-bq-queries.yaml
+# Where to log queries (default: select-bq-queries.yaml in current dir)
+log_path: select-bq-queries.yaml
 
 # Optional allowlist. Omit or leave empty to allow all tables.
 # When present, only these tables can be queried.
@@ -33,15 +33,15 @@ allowlist:
     table: "*"   # wildcard: all tables in this dataset
 ```
 
-- **`log_path`** — Path for the query log (default: `safe-bq-queries.yaml`). Use an absolute path to log outside the project.
+- **`log_path`** — Path for the query log (default: `select-bq-queries.yaml`). Use an absolute path to log outside the project.
 - **`allowlist`** — List of allowed `project`/`dataset`/`table`. Use `table: "*"` for all tables in a dataset. Omit to allow all tables.
 
-To use a different config path: `safe-bq query --config ./my-config.yaml "SELECT 1"`.
+To use a different config path: `select-bq query --config ./my-config.yaml "SELECT 1"`.
 
 To use an external allowlist file:
 
 ```yaml
-log_path: safe-bq-queries.yaml
+log_path: select-bq-queries.yaml
 allowlist_path: allowlist.yaml
 ```
 
@@ -49,22 +49,26 @@ allowlist_path: allowlist.yaml
 
 ```bash
 # Run a SELECT query (same as bq query, but validated)
-safe-bq query "SELECT 1"
-safe-bq query "SELECT * FROM project.dataset.table LIMIT 10" --format=pretty
+select-bq query "SELECT 1"
+select-bq query "SELECT * FROM project.dataset.table LIMIT 10" --format=pretty
 
 # Query from file
-safe-bq query -f query.sql
+select-bq query -f query.sql
 
 # Custom config
-safe-bq query --config ./my-config.yaml "SELECT * FROM my_table"
+select-bq query --config ./my-config.yaml "SELECT * FROM my_table"
 
-# All bq query flags are passed through
-safe-bq query --use_legacy_sql=false --project_id=my-project "SELECT 1"
+# Use Standard SQL (default) or legacy SQL
+select-bq query --use_legacy_sql=false "SELECT 1"
+select-bq query --use_legacy_sql=true "SELECT 1"
+
+# All bq query flags are passed through (format, project_id, etc.)
+select-bq query --format=pretty --project_id=my-project "SELECT 1"
 ```
 
 ## Query Log
 
-Logged to `log_path` (default `safe-bq-queries.yaml`):
+Logged to `log_path` (default `select-bq-queries.yaml`):
 
 ```yaml
 queries:
@@ -88,7 +92,7 @@ queries:
 Add to your project's Cursor rules or AGENTS.md:
 
 ```markdown
-Use `safe-bq query "SELECT ..."` when querying BigQuery. Do not use raw `bq` for queries.
+Use `select-bq query "SELECT ..."` when querying BigQuery. Do not use raw `bq` for queries.
 ```
 
 ## Publishing

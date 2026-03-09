@@ -1,4 +1,4 @@
-"""Safe BigQuery CLI - wraps bq with SELECT-only validation, allowlist, and audit logging."""
+"""Select BigQuery CLI - wraps bq with SELECT-only validation, allowlist, and audit logging."""
 
 from __future__ import annotations
 
@@ -10,22 +10,23 @@ from pathlib import Path
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Safe BigQuery CLI - SELECT-only queries with allowlist and audit logging. Wraps the official bq CLI.",
+        description="Select BigQuery CLI - SELECT-only queries with allowlist and audit logging. Wraps the official bq CLI.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  safe-bq query "SELECT 1"
-  safe-bq query --format=pretty "SELECT * FROM project.dataset.table LIMIT 10"
-  safe-bq query -f query.sql
-  safe-bq query --config .safe-bq.yaml "SELECT * FROM my_dataset.my_table"
+  select-bq query "SELECT 1"
+  select-bq query --format=pretty "SELECT * FROM project.dataset.table LIMIT 10"
+  select-bq query --use_legacy_sql=false "SELECT 1"
+  select-bq query -f query.sql
+  select-bq query --config .select-bq.yaml "SELECT * FROM my_dataset.my_table"
         """,
     )
     parser.add_argument(
         "--config",
         "-c",
         type=Path,
-        default=Path(".safe-bq.yaml"),
-        help="Path to config file (default: .safe-bq.yaml). Contains allowlist and log_path.",
+        default=Path(".select-bq.yaml"),
+        help="Path to config file (default: .select-bq.yaml). Contains allowlist and log_path.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -46,6 +47,12 @@ Examples:
         "--dry-run",
         action="store_true",
         help="Only validate query, do not execute (useful for testing)",
+    )
+    query_parser.add_argument(
+        "--use_legacy_sql",
+        choices=("true", "false"),
+        default="false",
+        help="Use legacy SQL dialect (default: false = Standard SQL)",
     )
 
     args, bq_args = parser.parse_known_args()
@@ -89,7 +96,7 @@ def run_query(args: argparse.Namespace, bq_args: list[str]) -> None:
         except Exception as e:
             print(f"Warning: Could not load config: {e}", file=sys.stderr)
 
-    log_path = Path(config.get("log_path", "safe-bq-queries.yaml"))
+    log_path = Path(config.get("log_path", "select-bq-queries.yaml"))
 
     # Resolve allowlist: external file, or inline in config
     allowlist: list[tuple[str | None, str | None, str]] = []
@@ -125,7 +132,8 @@ def run_query(args: argparse.Namespace, bq_args: list[str]) -> None:
         sys.exit(0)
 
     # 3. Run bq query (pass through unknown args like --format=pretty, --project_id=...)
-    bq_cmd = ["bq", "query"] + bq_args + [query]
+    use_legacy = getattr(args, "use_legacy_sql", "false")
+    bq_cmd = ["bq", "query", f"--use_legacy_sql={use_legacy}"] + bq_args + [query]
     try:
         result = subprocess.run(bq_cmd, capture_output=False)
         success = result.returncode == 0

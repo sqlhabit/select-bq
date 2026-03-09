@@ -3,14 +3,14 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "safe-bq"
-version = "0.1.0"
-description = "Safe BigQuery CLI wrapper - SELECT-only queries with allowlist and audit logging"
+name = "select-bq"
+version = "0.1.1"
+description = "Select BigQuery CLI - SELECT-only queries with allowlist and audit logging"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 keywords = ["bigquery", "cli", "security", "gcp", "sql", "allowlist", "audit"]
-authors = [{ name = "safe-bq contributors" }]
+authors = [{ name = "select-bq contributors" }]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -35,11 +35,11 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/sqlhabit/safe-bq"
-Repository = "https://github.com/sqlhabit/safe-bq"
+Homepage = "https://github.com/sqlhabit/select-bq"
+Repository = "https://github.com/sqlhabit/select-bq"
 
 [project.scripts]
-safe-bq = "safe_bq.cli:main"
+select-bq = "select_bq.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

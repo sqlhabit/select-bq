@@ -1,7 +1,7 @@
-# Example safe-bq config
-# Copy to .safe-bq.yaml and customize
+# Example select-bq config
+# Copy to .select-bq.yaml and customize
 
-log_path: safe-bq-queries.yaml
+log_path: select-bq-queries.yaml
 
 # Allowlist: only these tables are queryable when non-empty
 # Omit or leave empty to allow all tables
